@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "M3"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Get some code from a GitHub repository
+                git 'https://github.com/naimesh007rana/Cucumber-Project.git'
+
+	            // to run on some other branch
+	            // git branch: 'main', url: 'https://github.com/nicks204/TestNG_WDM.git'
+            }
+        }
+        
+        stage('Test'){
+            steps {
+                // Run Maven on a Unix agent.
+                sh "mvn clean test"
+
+                // To run Maven on a Windows agent, use
+                //bat "mvn clean test"
+            }
+            
+           post{
+                always {
+                    cucumber '**/cucumber.json'
+                }
+            }
+            
+        }
+    }
+}
